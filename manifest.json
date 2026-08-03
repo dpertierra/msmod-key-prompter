@@ -1,0 +1,12 @@
+{
+  "id": "com.dpertierra.key-prompter",
+  "name": "Key Prompter",
+  "version": "1.0.0",
+  "apiVersion": "1.0.0",
+  "main": "index.js",
+  "authors": [{ "name": "DPertierra", "url": "https://github.com/dpertierra" }],
+  "description": "Nudges you toward keyboard shortcuts when you perform an action with the mouse that already has one — inspired by JetBrains' Key Promoter X.",
+  "homepage": "https://github.com/dpertierra/msmod-key-prompter",
+  "tags": ["productivity", "keyboard", "shortcuts", "ui"],
+  "permissions": ["ui.toasts", "ui.dialogs"]
+}
