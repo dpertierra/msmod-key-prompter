@@ -55,8 +55,9 @@ toasts, and all write to the same per-action "missed" counter.
 
 ## What it doesn't catch
 
-- Actions with no keyboard shortcut bound show an "Assign shortcut" nudge instead — muting one
-  works the same as any other action.
+- Actions with no keyboard shortcut bound show an "Assign shortcut" nudge instead of a "Change
+  key" one — muting one works the same as any other action. Both buttons open the Keyboard
+  Shortcuts dialog scrolled to that action and ready to capture a new key.
 - Mouse actions inside a text field are unaffected — `keybind.triggered` only fires for
   built-in shortcuts the global dispatcher actually resolves, which already excludes text entry.
 - DevTools, Select All, and Deselect rely on the DOM-matching layer only (no bus event, no
