@@ -79,16 +79,19 @@ jobs:
 
       - name: Compute SHA-256
         id: hash
+        env:
+          ASSET_NAME: ${{ steps.meta.outputs.asset-name }}
+          AUTHORS_JSON: ${{ steps.meta.outputs.authors }}
         run: |
-          SHA=$(sha256sum "${{ steps.meta.outputs.asset-name }}" | awk '{print $1}')
+          SHA=$(sha256sum "$ASSET_NAME" | awk '{print $1}')
           echo "sha256=$SHA" >> "$GITHUB_OUTPUT"
-          echo "$SHA  ${{ steps.meta.outputs.asset-name }}" > SHA256SUMS.txt
+          echo "$SHA  $ASSET_NAME" > SHA256SUMS.txt
           # Whole registry entry, in index.json field order, for the registry-pr job below.
           # Tags are slugged to the registry's `^[a-z0-9-]+$` (so "Terrain Tags" and "19.1"
           # become "terrain-tags" and "19-1"), deduped, capped at the 8 the schema allows.
-          ENTRY=$(jq -c --argjson authors '${{ steps.meta.outputs.authors }}' \
+          ENTRY=$(jq -c --argjson authors "$AUTHORS_JSON" \
                         --arg repo "$GITHUB_REPOSITORY" \
-                        --arg asset "${{ steps.meta.outputs.asset-name }}" \
+                        --arg asset "$ASSET_NAME" \
                         --arg sha "$SHA" \
                         '{ id, name, authors: $authors, repo: $repo,
                            version, assetName: $asset, sha256: $sha,
@@ -168,9 +171,10 @@ jobs:
       - name: Update index.json
         id: registry
         working-directory: registry
+        env:
+          MOD_ID: ${{ needs.build-and-release.outputs.mod-id }}
+          ENTRY: ${{ needs.build-and-release.outputs.entry }}
         run: |
-          MOD_ID="${{ needs.build-and-release.outputs.mod-id }}"
-          ENTRY='${{ needs.build-and-release.outputs.entry }}'
           UPDATED_AT="$(date -u +%Y-%m-%dT%H:%M:%SZ)"
           if jq -e --arg id "$MOD_ID" 'any(.mods[]; .id == $id)' index.json > /dev/null; then
             echo "action=bump" >> "$GITHUB_OUTPUT"
